@@ -195,7 +195,13 @@ const splitIntervalY = nearestPowerOfTens(maxYAxis) / 10;
 const rows = parseInt(maxXAxis / splitIntervalX, 10);
 const columns = parseInt(maxYAxis / splitIntervalY, 10);
 
-console.log(rows, columns);
+const xAxisHeaders = _.range(splitIntervalX, maxXAxis, splitIntervalX).map(
+  header => header.toString() + "K"
+);
+const yAxisHeaders = _.range(splitIntervalY, maxYAxis, splitIntervalY).map(
+  header => header.toString() + "K"
+);
+console.log(rows, columns, xAxisHeaders, yAxisHeaders);
 // const val = 0;
 
 const heatMapData = Array.from(Array(rows), () => Array(columns).fill([]));
@@ -221,4 +227,4 @@ seriesData.forEach(dataItem => {
   ].push(dataItem);
 });
 
-console.log(heatMapData);
+// console.log(heatMapData);
