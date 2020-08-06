@@ -184,14 +184,41 @@ const seriesData = [
     y: 842725
   }
 ];
+const nearestPowerOfTens = value => Math.pow(10, Math.floor(Math.log10(value)));
+
 const maxX = _.maxBy(seriesData, item => item.x).x;
 const maxY = _.maxBy(seriesData, item => item.y).y;
+const maxXAxis = maxX + nearestPowerOfTens(maxX);
+const maxYAxis = maxY + nearestPowerOfTens(maxY);
+const splitIntervalX = nearestPowerOfTens(maxXAxis) / 10;
+const splitIntervalY = nearestPowerOfTens(maxYAxis) / 10;
+const rows = parseInt(maxXAxis / splitIntervalX, 10);
+const columns = parseInt(maxYAxis / splitIntervalY, 10);
 
-console.log(maxX, maxY);
+console.log(rows, columns);
+// const val = 0;
 
-const rows = 1000,
-  cols = 1000;
-const val = 0;
+const heatMapData = Array.from(Array(rows), () => Array(columns).fill([]));
+console.log("Heat", seriesData, heatMapData);
 
-const heatMapData = Array.from(Array(rows), () => Array(cols).fill(val));
-console.log("Heat", seriesData);
+seriesData.forEach(dataItem => {
+  console.log(
+    parseInt(dataItem.x / splitIntervalX, 10),
+    parseInt(dataItem.y / splitIntervalY, 10),
+    dataItem
+  );
+
+  if (
+    !heatMapData[parseInt(dataItem.x / splitIntervalX, 10)][
+      (dataItem.y / splitIntervalY, 10)
+    ].length
+  )
+    heatMapData[parseInt(dataItem.x / splitIntervalX, 10)][
+      (dataItem.y / splitIntervalY, 10)
+    ] = [];
+  heatMapData[parseInt(dataItem.x / splitIntervalX, 10)][
+    (dataItem.y / splitIntervalY, 10)
+  ].push(dataItem);
+});
+
+console.log(heatMapData);
