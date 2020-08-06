@@ -208,23 +208,11 @@ const heatMapData = Array.from(Array(rows), () => Array(columns).fill([]));
 console.log("Heat", seriesData, heatMapData);
 
 seriesData.forEach(dataItem => {
-  console.log(
-    parseInt(dataItem.x / splitIntervalX, defaultRadix),
-    parseInt(dataItem.y / splitIntervalY, defaultRadix),
-    dataItem
-  );
+  const xcoord = parseInt(dataItem.x / splitIntervalX, defaultRadix),
+    ycoord = parseInt(dataItem.y / splitIntervalY, defaultRadix);
 
-  if (
-    !heatMapData[parseInt(dataItem.x / splitIntervalX, defaultRadix)][
-      parseInt(dataItem.y / splitIntervalY, defaultRadix)
-    ].length
-  )
-    heatMapData[parseInt(dataItem.x / splitIntervalX, defaultRadix)][
-      parseInt(dataItem.y / splitIntervalY, defaultRadix)
-    ] = [];
-  heatMapData[parseInt(dataItem.x / splitIntervalX, defaultRadix)][
-    parseInt(dataItem.y / splitIntervalY, defaultRadix)
-  ].push(dataItem);
+  if (!heatMapData[xcoord][ycoord].length) heatMapData[xcoord][ycoord] = [];
+  heatMapData[xcoord][ycoord].push(dataItem);
 });
 
 // console.log(heatMapData);
