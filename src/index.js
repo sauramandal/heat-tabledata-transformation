@@ -185,7 +185,7 @@ const seriesData = [
   }
 ];
 const nearestPowerOfTens = value => Math.pow(10, Math.floor(Math.log10(value)));
-
+const defaultRadix = 10;
 const maxX = _.maxBy(seriesData, item => item.x).x;
 const maxY = _.maxBy(seriesData, item => item.y).y;
 const maxXAxis = maxX + nearestPowerOfTens(maxX);
@@ -203,21 +203,21 @@ console.log("Heat", seriesData, heatMapData);
 
 seriesData.forEach(dataItem => {
   console.log(
-    parseInt(dataItem.x / splitIntervalX, 10),
-    parseInt(dataItem.y / splitIntervalY, 10),
+    parseInt(dataItem.x / splitIntervalX, defaultRadix),
+    parseInt(dataItem.y / splitIntervalY, defaultRadix),
     dataItem
   );
 
   if (
-    !heatMapData[parseInt(dataItem.x / splitIntervalX, 10)][
-      (dataItem.y / splitIntervalY, 10)
+    !heatMapData[parseInt(dataItem.x / splitIntervalX, defaultRadix)][
+      parseInt(dataItem.y / splitIntervalY, defaultRadix)
     ].length
   )
-    heatMapData[parseInt(dataItem.x / splitIntervalX, 10)][
-      (dataItem.y / splitIntervalY, 10)
+    heatMapData[parseInt(dataItem.x / splitIntervalX, defaultRadix)][
+      parseInt(dataItem.y / splitIntervalY, defaultRadix)
     ] = [];
-  heatMapData[parseInt(dataItem.x / splitIntervalX, 10)][
-    (dataItem.y / splitIntervalY, 10)
+  heatMapData[parseInt(dataItem.x / splitIntervalX, defaultRadix)][
+    parseInt(dataItem.y / splitIntervalY, defaultRadix)
   ].push(dataItem);
 });
 
