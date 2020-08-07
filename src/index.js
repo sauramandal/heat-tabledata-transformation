@@ -1,5 +1,6 @@
 import _ from "lodash";
 
+const defaultRadix = 10;
 const seriesData = [
   {
     fullName: "Barbara Lee",
@@ -185,34 +186,32 @@ const seriesData = [
   }
 ];
 const nearestPowerOfTens = value => Math.pow(10, Math.floor(Math.log10(value)));
-const defaultRadix = 10;
 const maxX = _.maxBy(seriesData, item => item.x).x;
 const maxY = _.maxBy(seriesData, item => item.y).y;
 const maxXAxis = maxX + nearestPowerOfTens(maxX);
 const maxYAxis = maxY + nearestPowerOfTens(maxY);
-const splitIntervalX = nearestPowerOfTens(maxXAxis) / 10;
-const splitIntervalY = nearestPowerOfTens(maxYAxis) / 10;
-const rows = parseInt(maxXAxis / splitIntervalX, 10);
-const columns = parseInt(maxYAxis / splitIntervalY, 10);
+const splitIntervalX = nearestPowerOfTens(maxXAxis);
+const splitIntervalY = nearestPowerOfTens(maxYAxis);
+const rows = parseInt(maxXAxis / splitIntervalX, defaultRadix);
+const columns = parseInt(maxYAxis / splitIntervalY, defaultRadix);
+const yAxisHeaders = _.range(
+  splitIntervalX,
+  maxXAxis + nearestPowerOfTens(maxX),
+  splitIntervalX
+).map(header => header.toString());
+const xAxisHeaders = _.range(
+  splitIntervalY,
+  maxYAxis + nearestPowerOfTens(maxY),
+  splitIntervalY
+).map(header => header.toString());
 
-const xAxisHeaders = _.range(splitIntervalX, maxXAxis, splitIntervalX).map(
-  header => header.toString() + "K"
+const heatMapData = Array.from(Array(columns + 1), () =>
+  Array(rows + 1).fill([])
 );
-const yAxisHeaders = _.range(splitIntervalY, maxYAxis, splitIntervalY).map(
-  header => header.toString() + "K"
-);
-console.log(rows, columns, xAxisHeaders, yAxisHeaders);
-// const val = 0;
-
-const heatMapData = Array.from(Array(rows), () => Array(columns).fill([]));
-console.log("Heat", seriesData, heatMapData);
-
 seriesData.forEach(dataItem => {
   const xcoord = parseInt(dataItem.x / splitIntervalX, defaultRadix),
     ycoord = parseInt(dataItem.y / splitIntervalY, defaultRadix);
 
-  if (!heatMapData[xcoord][ycoord].length) heatMapData[xcoord][ycoord] = [];
-  heatMapData[xcoord][ycoord].push(dataItem);
+  if (!heatMapData[ycoord][xcoord].length) heatMapData[ycoord][xcoord] = [];
+  heatMapData[ycoord][xcoord].push(dataItem);
 });
-
-// console.log(heatMapData);
