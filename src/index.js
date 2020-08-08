@@ -544,13 +544,14 @@ const data = {
 const title = data.xAxis.title.text + " VS " + data.yAxis.title.text;
 const xAxisLabel = data.xAxis.title.text,
   yAxisLabel = data.yAxis.title.text;
-const nearestPowerOfTens = value => Math.pow(10, Math.floor(Math.log10(value)));
+const nearestPowerOfTens = (value) =>
+  Math.pow(10, Math.floor(Math.log10(value)));
 const maxX = data.xAxis.categories
   ? data.xAxis.categories.length
-  : _.maxBy(data.series[0].data, item => item.x).x;
+  : _.maxBy(data.series[0].data, (item) => item.x).x;
 const maxY = data.yAxis.categories
   ? data.yAxis.categories.length
-  : _.maxBy(data.series[0].data, item => item.y).y;
+  : _.maxBy(data.series[0].data, (item) => item.y).y;
 const maxXAxis =
   maxX +
   (data.xAxis.tickInterval
@@ -580,19 +581,19 @@ const yAxisHeaders = data.xAxis.categories
       splitIntervalX,
       maxXAxis + nearestPowerOfTens(maxX),
       splitIntervalX
-    ).map(header => header.toString());
+    ).map((header) => nFormatter(header, 0).toString());
 const xAxisHeaders = data.yAxis.categories
   ? data.yAxis.categories
   : _.range(
       splitIntervalY,
       maxYAxis + nearestPowerOfTens(maxY),
       splitIntervalY
-    ).map(header => header.toString());
+    ).map((header) => nFormatter(header, 0).toString());
 
 const heatMapData = Array.from(Array(columns + 1), () =>
   Array(rows + 1).fill([])
 );
-data.series[0].data.forEach(dataItem => {
+data.series[0].data.forEach((dataItem) => {
   const xcoord = parseInt(dataItem.x / splitIntervalX, defaultRadix),
     ycoord = parseInt(dataItem.y / splitIntervalY, defaultRadix);
 
@@ -600,4 +601,54 @@ data.series[0].data.forEach(dataItem => {
   heatMapData[ycoord][xcoord].push(dataItem);
 });
 
-console.log(heatMapData);
+console.log(heatMapData, xAxisHeaders, yAxisHeaders);
+
+function nFormatter(num, digitsAfterDecimal) {
+  const formatKeys = [
+    { value: 1, symbol: "" },
+    { value: 1e3, symbol: "k" },
+    { value: 1e6, symbol: "M" },
+    { value: 1e9, symbol: "G" },
+    { value: 1e12, symbol: "T" },
+    { value: 1e15, symbol: "P" },
+    { value: 1e18, symbol: "E" }
+  ];
+  const regex = /\.0+$|(\.[0-9]*[1-9])0+$/;
+  let i;
+  for (i = formatKeys.length - 1; i > 0; i--) {
+    if (num >= formatKeys[i].value) {
+      break;
+    }
+  }
+  return (
+    (num / formatKeys[i].value)
+      .toFixed(digitsAfterDecimal)
+      .replace(regex, "$1") + formatKeys[i].symbol
+  );
+}
+
+/*
+ * Tests
+ */
+var tests = [
+  { num: 1234, digits: 1 },
+  { num: 100000000, digits: 1 },
+  { num: 299792458, digits: 1 },
+  { num: 759878, digits: 1 },
+  { num: 759878, digits: 0 },
+  { num: 123, digits: 1 },
+  { num: 123.456, digits: 1 },
+  { num: 123.456, digits: 2 },
+  { num: 123.456, digits: 4 }
+];
+var i;
+for (i = 0; i < tests.length; i++) {
+  console.log(
+    "nFormatter(" +
+      tests[i].num +
+      ", " +
+      tests[i].digits +
+      ") = " +
+      nFormatter(tests[i].num, tests[i].digits)
+  );
+}
