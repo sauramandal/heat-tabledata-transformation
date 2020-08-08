@@ -1,2 +1,2 @@
 # heat-tabledata-transformation
-Created with CodeSandbox
+Takes raw series data from highcharts & tranforms it into table heat data.
